@@ -92,6 +92,9 @@ class MyDrive():
                 ).execute()
                 print(f'Updated File')
 
+    def download_file(self,):
+        return
+
 
 def main1(file_path,folder_id,request,zip_File_name):
     files = os.listdir(file_path)
@@ -104,6 +107,8 @@ def main1(file_path,folder_id,request,zip_File_name):
             my_drive.upload_file(item, file_path, MyDrive.thisList[len(MyDrive.thisList)-1])
         messagebox.showinfo('upload status', 'your file is uploaded to Drive succesfully')
     elif(request == 'list_files'):
+        if (folder_id!=""):
+            MyDrive.thisList.append(folder_id)
         my_drive.list_files(MyDrive.thisList[len(MyDrive.thisList)-1])
     else:
         if (folder_id!=""):
