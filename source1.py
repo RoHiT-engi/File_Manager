@@ -44,6 +44,8 @@ def loggin():
     pass_text_field = Entry(login_frame, width=40)
     pass_text_field.grid(row=1, column=1, pady=5)
 
+    Checkbutton(login_frame, text="Remember ME").grid(row=2,columnspan=2)
+
     def logging():
         # making login_status
         if (login_text_field.get() == "") and (pass_text_field.get() == ""):
@@ -224,10 +226,15 @@ def window31():
     if login_status == False:
         messagebox.showwarning('Invalid Access', 'Login to Proceed')
         workonfile.destroy()
-    Label(workonfile, text="Enter the Directory Path ").pack()
-    file_path_dirc = Entry(workonfile, width=40)
-    file_path_dirc.pack(pady=5)
-    Button(workonfile, text="Enter", command=lambda: working(str(file_path_dirc.get()))).pack()
+    Label(workonfile, text="Open a Directory Path ").pack()
+    def open_file():
+        workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:", title="select a file")
+        working(workonfile.file_path_dirc)
+
+    Checkbutton(workonfile,text="Remember path").pack()
+    Button(workonfile,text="Take recent File").pack()
+    Button(workonfile,text="Open",command=open_file).pack()
+    #Button(workonfile, text="Enter", command=lambda: working(path)).pack()
 
 
 def window32():

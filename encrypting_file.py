@@ -43,7 +43,7 @@ def encrypting(dir_name):
         with open(output_file, 'wb') as f:
             f.write(encrypted)  # Write the encrypted bytes to the output file
         os.remove(input_file)
-        tkinter.messagebox.showinfo('Encrypting A File','Encryption Successful')
+        tkinter.messagebox.showinfo('Encrypting A File', 'Encryption Successful')
         root.destroy()
 
     tkinter.Button(root,text="Enter",command=lambda : actual_encryption(password.get(),dir_name)).pack()
