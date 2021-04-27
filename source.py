@@ -203,7 +203,7 @@ def window31():
         work_on_file_frame = LabelFrame(workfile, text="Chose The Work To Do", padx=100, pady=100)
         work_on_file_frame.pack(padx=50, pady=50)
 
-        Button(work_on_file_frame, text="sort File by extention").grid(row=0, column=0)
+        Button(work_on_file_frame, text="sort File by extention",command = lambda :sort_by_ext(take_path)).grid(row=0, column=0)
         Button(work_on_file_frame, text="compress using ZIP File", command=lambda: zip_fun1(take_path)).grid(row=1, column=0)
         Button(work_on_file_frame, text="open a file", command= lambda: open_a_file(take_path)).grid(row=2, column=0)
         Button(work_on_file_frame, text="New File", command= lambda: new(take_path)).grid(row=0, column=1)

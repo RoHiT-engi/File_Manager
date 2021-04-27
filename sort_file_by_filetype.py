@@ -1,6 +1,5 @@
 import os
 import os as os1
-import glob
 import tkinter as tk
 from cffi.backend_ctypes import xrange
 from pathlib import Path

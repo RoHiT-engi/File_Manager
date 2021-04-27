@@ -14,6 +14,7 @@ from Delete_a_file import *
 from sort_file_by_filetype import *
 from Copy_a_file import *
 from Move_a_file import *
+from Share import *
 from Rename_a_file import *
 
 options = Tk()
@@ -23,7 +24,6 @@ menu_frame = LabelFrame(options, text="Chose The Following", padx=100, pady=100)
 menu_frame.pack(padx=50, pady=50)
 
 login_status = False
-
 
 def loggin():
     # loggin window
@@ -54,6 +54,7 @@ def loggin():
             login.destroy()
 
     Button(login_frame, text="Enter", command=logging).grid(row=3, columnspan=2)
+
 
 
 def window31():
@@ -170,7 +171,7 @@ def window31():
 
             Button(window, text="Enter", command=lambda: move_file1(path_passing, new_file_name.get())).pack()
         def share_on_LAN(path_passing):
-            return
+            Share(path_passing)
         def sort_a_file(path_passing):
             window = Toplevel()
             window.title('sort A File')
@@ -181,7 +182,7 @@ def window31():
             drop.pack()
             def sort_file(path_passing,request):
                 window.destroy()
-                sort_type1(request)
+                sort_type1(request,path_passing)
             Button(window, text="Enter", command=lambda: sort_file(path_passing, click.get())).pack()
         def rename_a_file(path_passing):
             window = Toplevel()
@@ -205,7 +206,7 @@ def window31():
         work_on_file_frame = LabelFrame(workfile, text="Chose The Work To Do", padx=100, pady=100)
         work_on_file_frame.pack(padx=50, pady=50)
 
-        Button(work_on_file_frame, text="sort File by extention").grid(row=0, column=0)
+        Button(work_on_file_frame, text="sort File by extention",command = lambda:sort_by_ext(take_path)).grid(row=0, column=0)
         Button(work_on_file_frame, text="compress using ZIP File", command=lambda: zip_fun1(take_path)).grid(row=1, column=0)
         Button(work_on_file_frame, text="open a file", command= lambda: open_a_file(take_path)).grid(row=2, column=0)
         Button(work_on_file_frame, text="New File", command= lambda: new(take_path)).grid(row=0, column=1)
@@ -231,7 +232,6 @@ def window31():
         workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:", title="select a file")
         working(workonfile.file_path_dirc)
 
-    Checkbutton(workonfile,text="Remember path").pack()
     Button(workonfile,text="Take recent File").pack()
     Button(workonfile,text="Open",command=open_file).pack()
     #Button(workonfile, text="Enter", command=lambda: working(path)).pack()
@@ -363,8 +363,8 @@ def logout():
     options.destroy()
 
 
-blog = Button(menu_frame, text="Login", command=loggin).grid(row=0, column=0)
-b1 = Button(menu_frame, text="Work on File", command=window31).grid(row=1, column=0)
-b2 = Button(menu_frame, text="Make A Backup", command=window32).grid(row=2, column=0)
-b3 = Button(menu_frame, text="Log Out", command=logout).grid(row=3, column=0)
+Button(menu_frame, text="Login", command=loggin).grid(row=0, column=0)
+Button(menu_frame, text="Work on File", command=window31).grid(row=1, column=0)
+Button(menu_frame, text="Make A Backup", command=window32).grid(row=2, column=0)
+Button(menu_frame, text="Log Out", command=logout).grid(row=3, column=0)
 options.mainloop()
