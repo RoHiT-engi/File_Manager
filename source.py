@@ -2,7 +2,7 @@ import os
 from tkinter import *
 from tkinter import messagebox
 from Drive import *
-from convert_to_zip import *
+from compress_using_zip import *
 from typing import Final
 from encrypting_file import *
 from decrepting_file import *

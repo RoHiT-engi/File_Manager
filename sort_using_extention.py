@@ -3,6 +3,7 @@ import shutil
 def sort_using_extention(file_path,request):
     global path
     src = file_path
+    print("inside func")
     try:
         if(request=="mp3"):
             path = file_path + "/music"
@@ -15,6 +16,7 @@ def sort_using_extention(file_path,request):
             os.mkdir(file_path + "/ppts")
         elif (request == "txt"):
             path = file_path + "/text"
+            print("hii")
             os.mkdir(file_path + "/text")
         elif (request == "jpg" or request == "jpeg" or request == "png"):
             path = file_path + "/image"

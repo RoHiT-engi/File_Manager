@@ -2,7 +2,7 @@ import os
 from tkinter import *
 from tkinter import messagebox
 from Drive import *
-from convert_to_zip import *
+from compress_using_zip import *
 from typing import Final
 from encrypting_file import *
 from decrepting_file import *
@@ -15,14 +15,17 @@ from sort_file_by_filetype import *
 from Copy_a_file import *
 from Move_a_file import *
 from Share import *
+from unzip_a_file import *
 from Rename_a_file import *
+from zip_a_file import *
+from making_db import *
 
 options = Tk()
 options.title("Home Page")
 # options frame
 menu_frame = LabelFrame(options, text="Chose The Following", padx=100, pady=100)
 menu_frame.pack(padx=50, pady=50)
-
+global login_ID
 login_status = False
 
 def loggin():
@@ -30,6 +33,7 @@ def loggin():
     login = Toplevel()
     login.title('File Manager & Recovery System')
     login.geometry('500x500')
+    global login_text_field
     # login window1
     login_frame = LabelFrame(login, text="login", padx=10, pady=100)
     login_frame.pack(padx=50, pady=50)
@@ -44,13 +48,18 @@ def loggin():
     pass_text_field = Entry(login_frame, width=40)
     pass_text_field.grid(row=1, column=1, pady=5)
 
-    Checkbutton(login_frame, text="Remember ME").grid(row=2,columnspan=2)
-
     def logging():
+        pwd_check=put_in_back('login',login_text_field.get(),'','')
+        print(pwd_check)
         # making login_status
-        if (login_text_field.get() == "") and (pass_text_field.get() == ""):
+        if (pwd_check==[]):
+            messagebox.showwarning('Login status','Invalid login ID or password')
+        if (pass_text_field.get() == pwd_check[0][0]):
             global login_status
+            global login_ID
+            login_ID = login_text_field.get()
             login_status = True
+            messagebox.showinfo('Login_status','Successfull login')
             login.destroy()
 
     Button(login_frame, text="Enter", command=logging).grid(row=3, columnspan=2)
@@ -60,6 +69,7 @@ def loggin():
 def window31():
     # work on file
     def working(take_path):
+        take_path1=take_path
         def zip_fun1(path_passing):
             zipp1 = Toplevel()
             zipp1.title('Make a ZIP file')
@@ -71,10 +81,12 @@ def window31():
                 main(str(take_path), str(file_name.get()))
                 zipp1.destroy()
             Button(zipp1, text="Enter", command=lambda: zipping(path_passing)).pack()
-        def secure_folder(path_passing):
+        def secure_folder():
             zipp1 = Toplevel()
             zipp1.title('Make a Secure file')
             zipp1.geometry('400x100')
+            messagebox.showinfo('Open file','select the secure file')
+            path_passing = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory")
             Label(zipp1, text="Enter Secure Folder Name").pack()
             file_name = Entry(zipp1, width=50)
             file_name.pack(pady=5)
@@ -82,12 +94,15 @@ def window31():
                 encrypt = Toplevel()
                 zipp1.destroy()
                 encrypt.title('Making a secure folder')
-                main(str(path_passing), str(file_name))
-                Button(encrypt, text="encrypt the file", command=lambda: encrypting(file_name)).pack()
-                Button(encrypt, text="decrypt the file", command=lambda: decrypting(file_name)).pack()
-                Button(encrypt, text="open the encrypted file", command=lambda: os.startfile('your_encrypted_file.encrypted')).pack()
-
-
+                path=main(str(path_passing), str(file_name))
+                def open_encrypted():
+                    try :
+                        os.startfile('your_encrypted_file.encrypted')
+                    except FileNotFoundError :
+                        messagebox.showinfo('encryption Status','you have not encrypted the file')
+                Button(encrypt, text="encrypt the file", command=lambda: encrypting(path)).pack()
+                Button(encrypt, text="decrypt the file", command=lambda: decrypting(path)).pack()
+                Button(encrypt, text="open the encrypted file", command=open_encrypted).pack()
             Button(zipp1, text="Enter", command=lambda: things_to_do(file_name.get())).pack()
         def sort_by_ext(path_passing):
             window = Toplevel()
@@ -95,10 +110,11 @@ def window31():
             workfile.geometry('500x500')
             click = StringVar()
             click.set('Select the Extention')
-            drop = OptionMenu(window, click, ".txt", ".mp3", ".mp4", ".pptx", ".jpg", ".jpeg", ".png", ".doc", ".docx", ".pdf")
+            drop = OptionMenu(window, click, "txt", "mp3", "mp4", "pptx", "jpg", "jpeg", "png", "doc", "docx", "pdf")
             drop.pack()
             def sort(clicked_val):
                 window.destroy()
+                print("hi")
                 sort_using_extention(path_passing,clicked_val)
 
             Button(window, text="Enter", command=lambda: sort(click.get())).pack()
@@ -178,12 +194,15 @@ def window31():
             workfile.geometry('500x500')
             click = StringVar()
             click.set('Select the method of sorting')
-            drop = OptionMenu(window, click, "size", "date of creation ", "last accessed","last modified")
+            drop = OptionMenu(window, click, "file size", "file Name","last modified")
             drop.pack()
             def sort_file(path_passing,request):
                 window.destroy()
                 sort_type1(request,path_passing)
             Button(window, text="Enter", command=lambda: sort_file(path_passing, click.get())).pack()
+        def unzip_file(path_passing):
+            check=messagebox.askyesno('UNZIPPING','do you want to keep original ZIP file after extraction')
+            unzip(check)
         def rename_a_file(path_passing):
             window = Toplevel()
             window.title('Rename A File')
@@ -198,6 +217,23 @@ def window31():
                 window.destroy()
                 renameing(path_passing, file_name, new_file_name)
             Button(window, text="Enter", command=lambda: rename_file(path_passing, file_name.get(), new_file_name.get())).pack()
+        def change_path(path_passing):
+            path2 = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory to save")
+            messagebox.showinfo('hi', f'your working directory {path_passing} has changed to {path2}')
+            put_in_back('put_prev_path', login_ID, path2, '')
+            working(path2)
+            workfile.destroy()
+        def zip_a_folder():
+            zipp1 = Toplevel()
+            zipp1.title('Make a ZIP file')
+            zipp1.geometry('400x100')
+            Label(zipp1, text="Enter ZIP File Name").pack()
+            file_name = Entry(zipp1, width=50)
+            file_name.pack(pady=5)
+            def zipping():
+                zip(str(file_name.get()))
+                zipp1.destroy()
+            Button(zipp1, text="Enter", command= zipping).pack()
         workfile = Toplevel()
         workfile.title('Chose the Work')
         workfile.geometry('500x500')
@@ -211,15 +247,17 @@ def window31():
         Button(work_on_file_frame, text="open a file", command= lambda: open_a_file(take_path)).grid(row=2, column=0)
         Button(work_on_file_frame, text="New File", command= lambda: new(take_path)).grid(row=0, column=1)
         Button(work_on_file_frame, text="Sort a File by filestatus", command= lambda: sort_a_file(take_path)).grid(row=1, column=1)
-        Button(work_on_file_frame, text="Make a secure Folder", command=lambda: secure_folder(take_path)).grid(row=2, column=1)
+        Button(work_on_file_frame, text="Make a secure Folder", command=secure_folder).grid(row=2, column=1)
         Button(work_on_file_frame, text="delete a file", command= lambda:delete_a_file(take_path)).grid(row=3, column=0)
-        Button(work_on_file_frame, text="list all files", command= lambda: list_files(take_path)).grid(row=3, column=1)
+        Button(work_on_file_frame, text="list all files", command= lambda: list_files(take_path1)).grid(row=3, column=1)
         Button(work_on_file_frame, text="copy files to another dirc", command= lambda: copy_file(take_path)).grid(row=4, column=0)
         Button(work_on_file_frame, text="move files to another dirc", command= lambda: move_file(take_path)).grid(row=4, column=1)
         Button(work_on_file_frame, text="share directory on LAN", command= lambda: share_on_LAN(take_path)).grid(row=5, column=0)
         Button(work_on_file_frame, text="Rename a File", command = lambda :rename_a_file(take_path)).grid(row=5, column=1)
+        Button(work_on_file_frame, text="unzip a File", command=lambda :unzip_file(take_path)).grid(row=6,column=1)
         Button(work_on_file_frame, text="BACK",command=workfile.destroy).grid(row=6, column=0)
-
+        Button(work_on_file_frame, text="ZIP a file",command= zip_a_folder).grid(row=7, column=1)
+        Button(work_on_file_frame, text="Change Directory", command=lambda :change_path(take_path)).grid(row=7, column=0)
     # making Toplevel
     workonfile = Toplevel()
     workonfile.title('Working On File')
@@ -227,14 +265,24 @@ def window31():
     if login_status == False:
         messagebox.showwarning('Invalid Access', 'Login to Proceed')
         workonfile.destroy()
-    Label(workonfile, text="Open a Directory Path ").pack()
-    def open_file():
-        workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:", title="select a file")
-        working(workonfile.file_path_dirc)
+    else:
+        check=messagebox.askyesno('Prev folder','whould you like to continue with previous directory')
+        if (check==True):
+            prev_path=put_in_back('work_on_file',login_ID,'','')
+            if(prev_path == []):
+                messagebox.showinfo('Work on file status','no previous directory found')
+                messagebox.showinfo('Open', 'chose your working directory')
+                workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory")
+                put_in_back('put_prev_path', login_ID, workonfile.file_path_dirc, '')
+                working(workonfile.file_path_dirc)
+            else:
+                working(prev_path[0][0])
+        else:
+            messagebox.showinfo('Open','chose your working directory')
+            workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory")
+            put_in_back('put_prev_path',login_ID,workonfile.file_path_dirc,'')
+            working(workonfile.file_path_dirc)
 
-    Button(workonfile,text="Take recent File").pack()
-    Button(workonfile,text="Open",command=open_file).pack()
-    #Button(workonfile, text="Enter", command=lambda: working(path)).pack()
 
 
 def window32():
@@ -246,65 +294,21 @@ def window32():
     if login_status == False:
         messagebox.showwarning('Invalid Access', 'Login to Proceed')
         takingdirc_path.destroy()
+    else:
+        messagebox.showinfo('Open', 'chose your backup folder')
+        takingdirc_path.file_path_dirc = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory")
+        def taking_path(path):
+            backups = Toplevel()
+            backups.title('Create the Backup')
+            backups.geometry('500x500')
+            takingdirc_path.destroy()
+            global backup_frame
 
-    def taking_path(path):
-        backups = Toplevel()
-        backups.title('Create the Backup')
-        backups.geometry('500x500')
-        takingdirc_path.destroy()
-        global backup_frame
-
-        def upload(take_path):
-            uploading = Toplevel()
-            uploading.title('Taking Path & ID')
-            uploading.geometry('400x100')
-            ask_first_time_login = messagebox.askquestion('ask first time', 'Did you provide destination Folder ID?')
-            if ask_first_time_login == 'no':
-                messagebox.showinfo('change the id request', 'plz provide a destination id')
-                Label(uploading, text="Enter your Drive File ID ").pack()
-                folder_id = Entry(uploading, width=40)
-                folder_id.pack(pady=5)
-
-                def first_id():
-                    main1(str(take_path), folder_id.get(), 'upload', "")
-                    uploading.destroy()
-
-                Button(uploading, text="Click to Continue", command=first_id).pack()
-            else:
-                ask_destination = messagebox.askquestion('taking destination', 'change the destination Id?')
-                if ask_destination == 'yes':
-                    Label(uploading, text="Enter your Drive File ID ").pack()
-                    folder_id = Entry(uploading, width=40)
-                    folder_id.pack(pady=5)
-
-                    def change_id():
-                        main1(str(take_path), str(folder_id.get()), 'upload', "")
-                        uploading.destroy()
-
-                    Button(uploading, text="Click to Continue", command=change_id).pack()
-                    # uploading.destroy()
-                else:
-                    # Label(uploading, text=str(fixed_id)+'hii').pack()
-                    main1(str(take_path), "", 'upload', "")
-                    uploading.destroy()
-
-        def zipping(take_path):
-            zipp = Toplevel()
-            zipp.title("zip a file")
-            zipp.geometry('400x250')
-            Label(zipp, text="Enter ZIP File Name").pack()
-            file_name = Entry(zipp, width=50)
-            file_name.pack(pady=5)
-
-            def zip_fun(path_passing):
-                main(str(path_passing), str(file_name.get()))
-                give_path = os.getcwd()
-                path = f"{file_name.get()}" + ".zip"
+            def upload(take_path):
                 uploading = Toplevel()
                 uploading.title('Taking Path & ID')
                 uploading.geometry('400x100')
-                ask_first_time_login = messagebox.askquestion('ask first time',
-                                                              'Did you provide destination Folder ID?')
+                ask_first_time_login = messagebox.askquestion('ask first time', 'Did you provide destination Folder ID?')
                 if ask_first_time_login == 'no':
                     messagebox.showinfo('change the id request', 'plz provide a destination id')
                     Label(uploading, text="Enter your Drive File ID ").pack()
@@ -312,56 +316,100 @@ def window32():
                     folder_id.pack(pady=5)
 
                     def first_id():
-                        main1(str(give_path), folder_id.get(), '', path)
+                        main1(str(take_path), folder_id.get(), 'upload', "")
                         uploading.destroy()
-                        zipp.destroy()
 
                     Button(uploading, text="Click to Continue", command=first_id).pack()
                 else:
-                    main1(str(give_path), "", '', path)
+                    ask_destination = messagebox.askquestion('taking destination', 'change the destination Id?')
+                    if ask_destination == 'yes':
+                        Label(uploading, text="Enter your Drive File ID ").pack()
+                        folder_id = Entry(uploading, width=40)
+                        folder_id.pack(pady=5)
+
+                        def change_id():
+                            main1(str(take_path), str(folder_id.get()), 'upload', "")
+                            uploading.destroy()
+
+                        Button(uploading, text="Click to Continue", command=change_id).pack()
+                        # uploading.destroy()
+                    else:
+                        # Label(uploading, text=str(fixed_id)+'hii').pack()
+                        main1(str(take_path), "", 'upload', "")
+                        uploading.destroy()
+
+            def zipping(take_path):
+                zipp = Toplevel()
+                zipp.title("zip a file")
+                zipp.geometry('400x250')
+                Label(zipp, text="Enter ZIP File Name").pack()
+                file_name = Entry(zipp, width=50)
+                file_name.pack(pady=5)
+
+                def zip_fun(path_passing):
+                    main(str(path_passing), str(file_name.get()))
+                    give_path = os.getcwd()
+                    path = f"{file_name.get()}" + ".zip"
+                    uploading = Toplevel()
+                    uploading.title('Taking Path & ID')
+                    uploading.geometry('400x100')
+                    ask_first_time_login = messagebox.askquestion('ask first time',
+                                                                  'Did you provide destination Folder ID?')
+                    if ask_first_time_login == 'no':
+                        messagebox.showinfo('change the id request', 'plz provide a destination id')
+                        Label(uploading, text="Enter your Drive File ID ").pack()
+                        folder_id = Entry(uploading, width=40)
+                        folder_id.pack(pady=5)
+
+                        def first_id():
+                            main1(str(give_path), folder_id.get(), '', path)
+                            uploading.destroy()
+                            zipp.destroy()
+
+                        Button(uploading, text="Click to Continue", command=first_id).pack()
+                    else:
+                        main1(str(give_path), "", '', path)
+                        uploading.destroy()
+                        zipp.destroy()
+
+                Button(zipp, text="Enter", command=lambda: zip_fun(take_path)).pack()
+
+            def list_files(take_path):
+                uploading = Toplevel()
+                uploading.title('Taking Path & ID')
+                uploading.geometry('400x100')
+                ask_first_time_login = messagebox.askquestion('ask first time', 'Did you provide destination Folder ID?')
+                if ask_first_time_login == 'no':
+                    messagebox.showinfo('change the id request', 'plz provide a destination id')
+                    Label(uploading, text="Enter your Drive File ID ").pack()
+                    folder_id = Entry(uploading, width=40)
+                    folder_id.pack(pady=5)
+
+                    def first_id():
+                        main1(take_path, folder_id.get(), "list_files", "")
+                        uploading.destroy()
+
+                    Button(uploading, text="Click to Continue", command=first_id).pack()
+                else:
+                    main1(take_path, "", "list_files", "")
                     uploading.destroy()
-                    zipp.destroy()
 
-            Button(zipp, text="Enter", command=lambda: zip_fun(take_path)).pack()
-
-        def list_files(take_path):
-            uploading = Toplevel()
-            uploading.title('Taking Path & ID')
-            uploading.geometry('400x100')
-            ask_first_time_login = messagebox.askquestion('ask first time', 'Did you provide destination Folder ID?')
-            if ask_first_time_login == 'no':
-                messagebox.showinfo('change the id request', 'plz provide a destination id')
-                Label(uploading, text="Enter your Drive File ID ").pack()
-                folder_id = Entry(uploading, width=40)
-                folder_id.pack(pady=5)
-
-                def first_id():
-                    main1(take_path, folder_id.get(), "list_files", "")
-                    uploading.destroy()
-
-                Button(uploading, text="Click to Continue", command=first_id).pack()
-            else:
-                main1(take_path, "", "list_files", "")
-                uploading.destroy()
-
-        backup_frame = LabelFrame(backups, text="Create a Backup", padx=100, pady=100)
-        backup_frame.pack(padx=50, pady=50)
-        Button(backup_frame, text="Upload to Google Drive", command=lambda: upload(path)).pack()
-        Button(backup_frame, text="Compress using ZIP & upload", command=lambda: zipping(path)).pack()
-        Button(backup_frame, text="Download from Drive").pack()
-        Button(backup_frame, text="files in Google Drive backup", command=lambda: list_files(path)).pack()
-        Button(backup_frame, text="back to Home Page", command=backups.destroy).pack()
-
-    Label(takingdirc_path, text="Enter the Backup folder Path").pack()
-    backup_path = Entry(takingdirc_path, width=50)
-    backup_path.pack()
-    Button(takingdirc_path, text="Enter", command=lambda: taking_path(backup_path.get())).pack()
+            backup_frame = LabelFrame(backups, text="Create a Backup", padx=100, pady=100)
+            backup_frame.pack(padx=50, pady=50)
+            Button(backup_frame, text="Upload to Google Drive", command=lambda: upload(path)).pack()
+            Button(backup_frame, text="Compress using ZIP & upload", command=lambda: zipping(path)).pack()
+            Button(backup_frame, text="Download from Drive").pack()
+            Button(backup_frame, text="files in Google Drive backup", command=lambda: list_files(path)).pack()
+            Button(backup_frame, text="back to Home Page", command=backups.destroy).pack()
+        taking_path(takingdirc_path.file_path_dirc)
 
 
 def logout():
     messagebox.showinfo('Logging Out', 'Thank You for using File Manager')
-    options.destroy()
+    options.quit()
 
+def admin_access():
+    return
 
 Button(menu_frame, text="Login", command=loggin).grid(row=0, column=0)
 Button(menu_frame, text="Work on File", command=window31).grid(row=1, column=0)

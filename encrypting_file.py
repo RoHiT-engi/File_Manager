@@ -6,13 +6,13 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-def encrypting(dir_name):
+def encrypting(path):
     root = tkinter.Tk()
     root.title('Encrypting')
     tkinter.Label(root, text="Enter the Password").pack()
     password = tkinter.Entry(root, width= 50)
     password.pack()
-    def actual_encryption(password,dir_name):
+    def actual_encryption(password,path):
         password_provided = password
         password = password_provided.encode()  # Convert to type bytes
         salt = b'salt_'  # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
@@ -30,8 +30,7 @@ def encrypting(dir_name):
         file.close()
 
         # Can only use kdf once
-        dir_name = dir_name + ".zip"
-        input_file = f"C:/Users/91922/PycharmProjects/file_manager/{dir_name}"
+        input_file = str(path)
         output_file = 'your_encrypted_file.encrypted'
 
         with open(input_file, 'rb') as f:
@@ -46,5 +45,9 @@ def encrypting(dir_name):
         tkinter.messagebox.showinfo('Encrypting A File', 'Encryption Successful')
         root.destroy()
 
-    tkinter.Button(root,text="Enter",command=lambda : actual_encryption(password.get(),dir_name)).pack()
+    tkinter.Button(root,text="Enter",command=lambda : actual_encryption(password.get(),path)).pack()
     root.mainloop()
+
+
+
+

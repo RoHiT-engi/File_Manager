@@ -7,9 +7,10 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 
-def decrypting(dir_name):
+
+def decrypting(path):
     root = tkinter.Tk()
     root.title('Encrypting')
     tkinter.Label(root, text="Enter the Password").pack()
@@ -17,7 +18,7 @@ def decrypting(dir_name):
     password.pack()
 
 
-    def actual_decryption(dir_name,password):
+    def actual_decryption(path,password):
         password_provided = password
         password = password_provided.encode()  # Convert to type bytes
         salt = b'salt_'  # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
@@ -29,14 +30,12 @@ def decrypting(dir_name):
             backend=default_backend()
         )
         key1 = base64.urlsafe_b64encode(kdf.derive(password))
-        dir_name = dir_name+".zip"
         file = open('key.key', 'rb')
         key = file.read()
         file.close()
         if (key1 == key):
             input_file = 'your_encrypted_file.encrypted'
-            filedi = open(dir_name,'w+')
-            output_file = f"C:/Users/91922/PycharmProjects/file_manager/{dir_name}"
+            output_file = path
 
             with open(input_file, 'rb') as f:
                 data = f.read()  # Read the bytes of the encrypted file
@@ -57,5 +56,8 @@ def decrypting(dir_name):
             messagebox.showwarning('incorrect password','INCORRECT PASSWORD')
         root.destroy()
 
-    tkinter.Button(root, text="Enter", command=lambda: actual_decryption(dir_name,password.get())).pack()
+    tkinter.Button(root, text="Enter", command=lambda: actual_decryption(path,password.get())).pack()
     root.mainloop()
+    os.remove('your_encrypted_file.encrypted')
+    os.remove('key.key')
+

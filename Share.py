@@ -42,6 +42,7 @@ def Share(file_path):
                     option_list.append(records[0])
                 tk.OptionMenu(root1, clicked, *option_list).pack()
                 def deleting():
+                    print(clicked.get())
                     put_in_database("", "", clicked.get(), "delete")
                     root1.destroy()
                 tk.Button(root1, text="Enter", command=deleting).pack()

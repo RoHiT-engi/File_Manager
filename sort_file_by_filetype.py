@@ -7,7 +7,6 @@ from pathlib import Path
 def sort_type1(request,file_path):
     global sorted
     if(request=="file size"):
-        """ Return list of file paths in directory sorted by file size """
         root = tk.Tk()
         root.title('Sort by Size')
         # Get list of files
@@ -44,7 +43,7 @@ def sort_type1(request,file_path):
         tk.Button(root, text='Ok', command=root.destroy).pack()
         root.mainloop()
 
-    elif(request=="Name"):
+    elif(request=="file Name"):
         root = tk.Tk()
         root.title('Sort by Size')
         sorted = sorted(os1.listdir(file_path))

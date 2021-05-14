@@ -18,7 +18,7 @@ def put_in_database(user_name,port_no,host_IP,request):
     elif (request == "delete"):
         print(host_IP)
         try :
-            c.execute(f"DELETE FROM connection WHERE host_ip = {host_IP}")
+            c.execute(f"DELETE FROM connection WHERE host_ip = '{host_IP}'")
         except sqlite3.OperationalError:
             mb.showinfo('Connecting','NO CONNECTION FOUND')
         mb.showinfo('Deleting', 'succescfull')
