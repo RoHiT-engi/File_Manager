@@ -4,7 +4,7 @@ The File Manger has features to Manage your files on single Click User can perfo
 
 # Features
 * file manipulation in python(create,update,delete,seek,move,copy,sorting)
-* Make a secure Folder (or Encrypted a file)
+* Make a secure Folder (or Encrypt a file)
 * Share a File on LAN or Internet (using Sockets)
 * Upload a File to Drive (Backup file)
 
