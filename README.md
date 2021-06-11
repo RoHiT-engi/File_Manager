@@ -23,8 +23,6 @@ To build this project, you require:
 * messagebox
 * pickle
 
-# Screenshots
-
 # Author
 its ME.
 
