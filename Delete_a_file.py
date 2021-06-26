@@ -10,9 +10,9 @@ def deleting(file_path,file_name):
                 for in_files in os.listdir(f'{file_path}/{files[0]}'):
                     if(in_files == file_name):
                         os.remove(f'{file_path}/{files[0]}/{file_name}')
-                        messagebox.showinfo('Confrimation','File is removed')
+                        messagebox.showinfo('Confirmation','File is removed')
             if (file == file_name):
                 os.remove(f'{file_path}/{file_name}')
-                messagebox.showinfo('Confrimation', 'File is removed')
+                messagebox.showinfo('Confirmation', 'File is removed')
     except FileNotFoundError:
         messagebox.showinfo('confirmation','File not found')

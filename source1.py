@@ -49,7 +49,7 @@ def loggin():
     pass_text_field.grid(row=1, column=1, pady=5)
 
     def logging():
-        pwd_check=put_in_back('login',login_text_field.get(),'','')
+        pwd_check=put_in_back('login',login_text_field.get(),'','','')
         print(pwd_check)
         # making login_status
         if (pwd_check==[]):
@@ -78,7 +78,7 @@ def window31():
             file_name = Entry(zipp1, width=50)
             file_name.pack(pady=5)
             def zipping(take_path):
-                main(str(take_path), str(file_name.get()))
+                zip(str(file_name.get()),'compress_dirc',take_path)
                 zipp1.destroy()
             Button(zipp1, text="Enter", command=lambda: zipping(path_passing)).pack()
         def secure_folder():
@@ -94,7 +94,7 @@ def window31():
                 encrypt = Toplevel()
                 zipp1.destroy()
                 encrypt.title('Making a secure folder')
-                path=main(str(path_passing), str(file_name))
+                path=zip(file_name,'compress_dirc',path_passing)
                 def open_encrypted():
                     try :
                         os.startfile('your_encrypted_file.encrypted')
@@ -114,8 +114,8 @@ def window31():
             drop.pack()
             def sort(clicked_val):
                 window.destroy()
-                print("hi")
                 sort_using_extention(path_passing,clicked_val)
+                messagebox.showinfo('sort Status','Sorted succesfully')
 
             Button(window, text="Enter", command=lambda: sort(click.get())).pack()
         def new(path_passing):
@@ -220,7 +220,7 @@ def window31():
         def change_path(path_passing):
             path2 = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory to save")
             messagebox.showinfo('hi', f'your working directory {path_passing} has changed to {path2}')
-            put_in_back('put_prev_path', login_ID, path2, '')
+            put_in_back('put_prev_path', login_ID, path2, '','')
             working(path2)
             workfile.destroy()
         def zip_a_folder():
@@ -231,7 +231,7 @@ def window31():
             file_name = Entry(zipp1, width=50)
             file_name.pack(pady=5)
             def zipping():
-                zip(str(file_name.get()))
+                zip(str(file_name.get()),'','')
                 zipp1.destroy()
             Button(zipp1, text="Enter", command= zipping).pack()
         workfile = Toplevel()
@@ -243,7 +243,7 @@ def window31():
         work_on_file_frame.pack(padx=50, pady=50)
 
         Button(work_on_file_frame, text="sort File by extention",command = lambda:sort_by_ext(take_path)).grid(row=0, column=0)
-        Button(work_on_file_frame, text="compress using ZIP File", command=lambda: zip_fun1(take_path)).grid(row=1, column=0)
+        Button(work_on_file_frame, text="compress folder using ZIP", command=lambda: zip_fun1(take_path)).grid(row=1, column=0)
         Button(work_on_file_frame, text="open a file", command= lambda: open_a_file(take_path)).grid(row=2, column=0)
         Button(work_on_file_frame, text="New File", command= lambda: new(take_path)).grid(row=0, column=1)
         Button(work_on_file_frame, text="Sort a File by filestatus", command= lambda: sort_a_file(take_path)).grid(row=1, column=1)
@@ -258,6 +258,7 @@ def window31():
         Button(work_on_file_frame, text="BACK",command=workfile.destroy).grid(row=6, column=0)
         Button(work_on_file_frame, text="ZIP a file",command= zip_a_folder).grid(row=7, column=1)
         Button(work_on_file_frame, text="Change Directory", command=lambda :change_path(take_path)).grid(row=7, column=0)
+        Button(work_on_file_frame, text="Compress a file").grid(row=8,column=0)
     # making Toplevel
     workonfile = Toplevel()
     workonfile.title('Working On File')
@@ -268,19 +269,19 @@ def window31():
     else:
         check=messagebox.askyesno('Prev folder','whould you like to continue with previous directory')
         if (check==True):
-            prev_path=put_in_back('work_on_file',login_ID,'','')
+            prev_path=put_in_back('work_on_file',login_ID,'','','')
             if(prev_path == []):
                 messagebox.showinfo('Work on file status','no previous directory found')
                 messagebox.showinfo('Open', 'chose your working directory')
                 workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory")
-                put_in_back('put_prev_path', login_ID, workonfile.file_path_dirc, '')
+                put_in_back('put_prev_path', login_ID, workonfile.file_path_dirc, '','')
                 working(workonfile.file_path_dirc)
             else:
                 working(prev_path[0][0])
         else:
             messagebox.showinfo('Open','chose your working directory')
             workonfile.file_path_dirc = filedialog.askdirectory(initialdir="C:/desktop", title="select a directory")
-            put_in_back('put_prev_path',login_ID,workonfile.file_path_dirc,'')
+            put_in_back('put_prev_path',login_ID,workonfile.file_path_dirc,'','')
             working(workonfile.file_path_dirc)
 
 
@@ -308,35 +309,27 @@ def window32():
                 uploading = Toplevel()
                 uploading.title('Taking Path & ID')
                 uploading.geometry('400x100')
-                ask_first_time_login = messagebox.askquestion('ask first time', 'Did you provide destination Folder ID?')
-                if ask_first_time_login == 'no':
-                    messagebox.showinfo('change the id request', 'plz provide a destination id')
-                    Label(uploading, text="Enter your Drive File ID ").pack()
+                record = put_in_back('get_folder_id', login_ID, '','','')
+                def new_folder_id():
+                    Label(uploading, text="enter the folder id").pack()
                     folder_id = Entry(uploading, width=40)
-                    folder_id.pack(pady=5)
-
-                    def first_id():
-                        main1(str(take_path), folder_id.get(), 'upload', "")
+                    folder_id.pack()
+                    put_in_back('put_folder_id', login_ID, '', '', folder_id.get())
+                    def upload_to_drive(folder_id, pathpassing):
+                        main1(pathpassing, folder_id, 'upload', '')
                         uploading.destroy()
-
-                    Button(uploading, text="Click to Continue", command=first_id).pack()
+                    Button(uploading, text="Enter", command=lambda: upload_to_drive(folder_id.get(), take_path)).pack()
+                if(record == []):
+                    messagebox.showinfo('take Folder ID','Plz provide your destination folder of google drive')
+                    new_folder_id()
                 else:
-                    ask_destination = messagebox.askquestion('taking destination', 'change the destination Id?')
-                    if ask_destination == 'yes':
-                        Label(uploading, text="Enter your Drive File ID ").pack()
-                        folder_id = Entry(uploading, width=40)
-                        folder_id.pack(pady=5)
-
-                        def change_id():
-                            main1(str(take_path), str(folder_id.get()), 'upload', "")
-                            uploading.destroy()
-
-                        Button(uploading, text="Click to Continue", command=change_id).pack()
-                        # uploading.destroy()
+                    check=messagebox.askyesno('Change Folder ID','do you want to change the Folder ID')
+                    if(check == True):
+                        new_folder_id()
                     else:
-                        # Label(uploading, text=str(fixed_id)+'hii').pack()
-                        main1(str(take_path), "", 'upload', "")
-                        uploading.destroy()
+                        print(record[0][0])
+
+
 
             def zipping(take_path):
                 zipp = Toplevel()
@@ -347,7 +340,7 @@ def window32():
                 file_name.pack(pady=5)
 
                 def zip_fun(path_passing):
-                    main(str(path_passing), str(file_name.get()))
+                    zip(str(file_name.get()), 'compress_dirc', path_passing)
                     give_path = os.getcwd()
                     path = f"{file_name.get()}" + ".zip"
                     uploading = Toplevel()
@@ -391,7 +384,7 @@ def window32():
 
                     Button(uploading, text="Click to Continue", command=first_id).pack()
                 else:
-                    main1(take_path, "", "list_files", "")
+                    main1(take_path, "", "list_files",login_ID )
                     uploading.destroy()
 
             backup_frame = LabelFrame(backups, text="Create a Backup", padx=100, pady=100)

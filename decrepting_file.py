@@ -14,7 +14,7 @@ def decrypting(path):
     root = tkinter.Tk()
     root.title('Encrypting')
     tkinter.Label(root, text="Enter the Password").pack()
-    password = tkinter.Entry(root, width=50)
+    password = tkinter.Entry(root,show="*",width=50)
     password.pack()
 
 

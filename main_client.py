@@ -1,7 +1,10 @@
 import socket
+from tkinter import filedialog
+
 import tqdm
 import os
 def client_connect(host_ip,port_no,file_path):
+    file=filedialog.askopenfilename(initialdir=file_path, title="select a file", filetypes=(("All files", "*.*"),))
     SEPARATOR = "<SEPARATOR>"
     BUFFER_SIZE = 4096 # send 4096 bytes each time step
     # the ip address or hostname of the server, the receiver
@@ -9,7 +12,7 @@ def client_connect(host_ip,port_no,file_path):
     # the port, let's use 5001
     port = int(port_no)
     # the name of file we want to send, make sure it exists
-    filename = file_path
+    filename = file
     # get the file size
     filesize = os.path.getsize(filename)
     # create the client socket
@@ -21,7 +24,7 @@ def client_connect(host_ip,port_no,file_path):
     s.send(f"{filename}{SEPARATOR}{filesize}".encode())
     # start sending the file
     progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
-    with open(filename, "rb") as f:
+    with open(rf'{filename}', "rb") as f:
         while True:
             # read the bytes from the file
             bytes_read = f.read(BUFFER_SIZE)
@@ -35,15 +38,6 @@ def client_connect(host_ip,port_no,file_path):
             progress.update(len(bytes_read))
     # close the socket
     s.close()
+#client_connect('192.168.0.104',3651,'C:/Users/91922/Desktop/proj')
 
-'''def connecting_client(file_path):
-    is_file = file_path.split('.')
-    if(len(is_file)==1):
-        for files in os.listdir(file_path):
-
-    else:
-        print(is_file)
-        print(file_path)
-
-connecting_client('C:/Users/91922/Desktop/hllu')'''
 

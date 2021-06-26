@@ -1,7 +1,7 @@
 import sqlite3
 from tkinter import messagebox as mb
 import tkinter as tk
-def put_in_back(request,login_id,prev_path,login_pwd):
+def put_in_back(request,login_id,prev_path,login_pwd,folder_id):
     #create a database or connect to one
     conn=sqlite3.connect('file_manager.db')
     #create cursor
@@ -34,6 +34,7 @@ def put_in_back(request,login_id,prev_path,login_pwd):
                           'login_ID': login_id,
                           'login_pwd': login_pwd
                       })
+            mb.showinfo('user add status','user add successfully')
         except sqlite3.OperationalError:
             print(sqlite3.OperationalError)
     if(request == "update_pwd"):
@@ -41,6 +42,24 @@ def put_in_back(request,login_id,prev_path,login_pwd):
                 c.execute(f"UPDATE login set login_pwd = '{login_pwd}' WHERE login_ID= '{login_id}'")
             except sqlite3.OperationalError:
                 print(sqlite3.OperationalError)
+    if(request == "put_folder_id"):
+        try :
+            c.execute(f"INSERT OR REPLACE INTO google_drive(login_ID,folder_id) VALUES('{login_id}','{folder_id}')")
+        except sqlite3.OperationalError:
+            print(sqlite3.OperationalError)
+    if(request == "get_folder_id"):
+        try :
+            c.execute(f"SELECT folder_id FROM google_drive where login_id = '{login_id}'")
+            record_folder_id = c.fetchall()
+            return record_folder_id
+        except sqlite3.OperationalError:
+            print(sqlite3.OperationalError)
+    if(request == "remove_id"):
+        try:
+            c.execute(f"DELETE FROM login WHERE login_ID = '{login_id}'")
+            mb.showinfo('delete status','record deleted')
+        except sqlite3.OperationalError:
+            print(sqlite3.OperationalError)
 
 
     #commit changes

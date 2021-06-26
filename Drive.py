@@ -1,7 +1,7 @@
 import pickle
 import os.path
 from typing import List, Any
-
+from making_db import *
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -54,7 +54,9 @@ class MyDrive():
 
         if not items:
             print('No files found.')
+            listing.destroy()
             messagebox.showinfo('No File Found', 'No Files in Backup folder')
+
         else:
             print('Files:')
             for item in items:
@@ -109,7 +111,13 @@ def main1(file_path,folder_id,request,zip_File_name):
     elif(request == 'list_files'):
         if (folder_id!=""):
             MyDrive.thisList.append(folder_id)
-        my_drive.list_files(MyDrive.thisList[len(MyDrive.thisList)-1])
+        record=put_in_back('get_folder_id',zip_File_name,'','','')
+        print(record)
+        if(record==[]):
+            my_drive.list_files(folder_id)
+        else :
+            my_drive.list_files(record[0][0])
+
     else:
         if (folder_id!=""):
             MyDrive.thisList.append(folder_id)

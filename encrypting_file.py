@@ -48,6 +48,3 @@ def encrypting(path):
     tkinter.Button(root,text="Enter",command=lambda : actual_encryption(password.get(),path)).pack()
     root.mainloop()
 
-
-
-

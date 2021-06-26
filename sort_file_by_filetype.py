@@ -18,6 +18,8 @@ def sort_type1(request,file_path):
 
         # Re-populate list with filename, size tuples
         for i in xrange(len(filepaths)):
+            print(filepaths[i])
+            print(os1.path.getsize(filepaths[i]))
             filepaths[i] = (filepaths[i], os1.path.getsize(filepaths[i]))
 
         filepaths.sort(key=lambda filename: filename[1], reverse=True)
@@ -27,7 +29,7 @@ def sort_type1(request,file_path):
             filepaths[i] = filepaths[i][0]
         file = ""
         for i in filepaths:
-            file = file + '\n' + i
+            file = file + '\n' + i + "    " + str(os1.path.getsize(i))
         tk.Label(root,text= file).pack()
         tk.Button(root,text='Ok',command=root.destroy).pack()
         root.mainloop()
@@ -38,7 +40,7 @@ def sort_type1(request,file_path):
         paths = sorted(Path(file_path).iterdir(), key=os.path.getmtime)
         file = ""
         for i in paths:
-            file = file + '\n' + str(i)
+            file = file + '\n' + str(i) + "    " + str(os.path.getmtime(i))
         tk.Label(root, text=file).pack()
         tk.Button(root, text='Ok', command=root.destroy).pack()
         root.mainloop()
