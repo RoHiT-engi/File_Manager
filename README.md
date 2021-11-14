@@ -23,6 +23,9 @@ To build this project, you require:
 * messagebox
 * pickle
 
+# installation
+ <code>pip install</code>
+
 # Author
 its ME.
 
